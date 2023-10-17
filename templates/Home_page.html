@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home page</title>
+</head>
+<body>
+    <h1>Obecny czas:</h1>
+    <p id="czas">{{ current_time }}</p>
+
+    <script>
+        function aktualizujCzas() {
+            var czasElement = document.getElementById("czas");
+            var teraz = new Date();
+            var godzina = teraz.getHours();
+            var minuta = teraz.getMinutes();
+            var sekunda = teraz.getSeconds();
+
+            godzina = (godzina < 10) ? "0" + godzina : godzina;
+            minuta = (minuta < 10) ? "0" + minuta : minuta;
+            sekunda = (sekunda < 10) ? "0" + sekunda : sekunda;
+
+            var czas = godzina + ":" + minuta + ":" + sekunda;
+            czasElement.innerHTML = czas;
+        }
+
+        setInterval(aktualizujCzas, 1000); // Aktualizuj co sekundę
+        aktualizujCzas(); // Wywołaj funkcję po załadowaniu strony
+    </script>
+
+     <input type="file" id="jsonFileInput">
+    <button id="openJsonButton">Otwórz JSON</button>
+    <ul id="jsonList"></ul>
+
+    <script>
+        document.getElementById('openJsonButton').addEventListener('click', function() {
+            var input = document.getElementById('jsonFileInput');
+            var jsonList = document.getElementById('jsonList');
+
+            var file = input.files[0];
+            if (file) {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    try {
+                        var jsonData = JSON.parse(e.target.result);
+                        jsonList.innerHTML = ''; // Wyczyść listę
+                        for (var key in jsonData) {
+                            if (jsonData.hasOwnProperty(key)) {
+                                var listItem = document.createElement('li');
+                                listItem.textContent = key + ': ' + jsonData[key];
+                                jsonList.appendChild(listItem);
+                            }
+                        }
+                    } catch (error) {
+                        alert('Błąd parsowania pliku JSON: ' + error);
+                    }
+                };
+
+                reader.readAsText(file);
+            } else {
+                alert('Proszę wybrać plik JSON.');
+            }
+        });
+    </script>
+
+    <p class="line-spacing"><button type="button"> <a href="http://api.nbp.pl/">API page</a></button></p>
+
+</body>
+</html>
