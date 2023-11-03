@@ -1,5 +1,12 @@
 <style>
-    .line-spacing {
-        margin-bottom: 10px;
-    }
+
+    .line-spacing { margin-bottom: 10px; }
+    .add_list { display: none; }
+    .substract_list { display: none; }
+    .hidden { display: none; }
+    .currency-list { display: flex; }
+    .currency-list ul { list-style-type: none; padding: 0; }
+    .currency-list li { margin: 0 10px; /* Miejsce między pozycjami na liście */ }
+    .line-space { margin-right: 20px; }
+
 </style>
