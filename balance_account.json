@@ -1,0 +1,10 @@
+{
+    "balance": 750.0,
+    "operation_history": "Substract 250.0"
+}{
+    "balance": 10000.0,
+    "operation_history": "Added 10000.0"
+}{
+    "balance": 9500.0,
+    "operation_history": "Substract 500.0"
+}
