@@ -1,10 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Account operations</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
 </head>
 <body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+              <li class="nav-item">
+              <a class="nav-link {{ 'active text-decoration-underline' if active_page == '/' else '' }}" href="{{ url_for('home_page') }}">Home page</a>
+              </li>
+              <li class="nav-item">
+              <a class="nav-link {{ 'active text-decoration-underline' if active_page == '/register_user' else '' }}" href="{{ url_for('register') }}">Register user</a>
+              </li>
+              <li class="nav-item">
+              <a class="nav-link {{ 'active text-decoration-underline' if active_page == '/login_user' else '' }}" href="{{ url_for('login') }}">Login user</a>
+              </li>
+              <li class="nav-item">
+              <a class="nav-link {{ 'active text-decoration-underline' if active_page == '/personal_wallet' else '' }}" href="{{ url_for('bank_wallet') }}">Personal wallet</a>
+              </li>
+              <li class="nav-item">
+              <a class="nav-link {{ 'active text-decoration-underline' if active_page == '/account_balance_operations.html' else '' }}" href="{{ url_for('account') }}">Your balance</a>
+              </li>
+              <li class="nav-item">
+              <a class="nav-link {{ 'active text-decoration-underline' if active_page == '/nbp_data' else '' }}" href="{{ url_for('nbp_data') }}">NBP data</a>
+              </li>
+              <li class="nav-item">
+              <a class="nav-link {{ 'active text-decoration-underline' if active_page == '' else '' }}" href="http://api.nbp.pl/">API NBP</a>
+              </li>
+              <li class="nav-item">
+              <a class="nav-link {{ 'active text-decoration-underline' if active_page == '/logout_user' else '' }}" href="{{ url_for('logout') }}">Logout</a>
+              </li>
+
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    {% with messages = get_flashed_messages() %}  {# Kod pozwala na wyświetlenie wiadomości z funkcji flash #}
+        {% if messages %}
+            <ul>
+            {% for message in messages %}
+
+                    {{ message }}
+
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <h1>Your account balance: {{ account_balance }} in PLN</h1>
+    <div class="container w-50">
+    <div class="d-flex flex-column">
+    <button type="submit" class="btn btn-primary" name="add" value="add" onclick="showAddField()">Add</button><br>
+    </div>
+    </div>
+    <div class="container w-50">
+    <div class="d-flex flex-column">
+    <div id="addBalanceField" style="display: none;">
+    <form method="POST" action="/account_balance_operations.html">
+        <div class="mb-3">
+        <label class="form-label" for="add_amount">Add amount:</label><br>
+        <input class="form-control" type="number" id="add_amount" name="add_amount" required><br>
+        <button class="btn btn-primary" name="add" value="add" type="submit">Add</button>
+        </div>
+    </form>
+    </div>
+    </div>
+    </div>
+
+    <script>
+        function showAddField() {var field = document.getElementById('addBalanceField');
+            if (field.style.display === 'none') { field.style.display = 'block';} else { field.style.display = 'none'; } }
+    </script>
+
+    <div class="container w-50">
+    <div class="d-flex flex-column">
+    <button type="submit" class="btn btn-primary" name="substract" value="substract" onclick="showSubstractField()">Substract</button><br>
+    </div>
+    </div>
+    <div class="container w-50">
+    <div class="d-flex flex-column">
+    <div id="substractBalanceField" style="display: none;">
+    <form method="POST" action="/account_balance_operations.html">
+        <div class="mb-3">
+        <label class="form-label" for="substract_amount">Substract amount:</label><br>
+        <input class="form-control" type="number" id="substract_amount" name="substract_amount" required><br>
+        <button class="btn btn-primary" name="substract" value="substract" type="submit">Substract</button>
+        </div>
+    </form>
+    </div>
+    </div>
+    </div>
+
+    <script>
+        function showSubstractField() {var field = document.getElementById('substractBalanceField');
+            if (field.style.display === 'none') { field.style.display = 'block';} else { field.style.display = 'none'; } }
+    </script>
 
 </body>
 </html>

@@ -6,5 +6,38 @@
 </head>
 <body>
 
+<input type="file" id="jsonFileInput">
+<button id="openJsonButton">Open file in .json</button>
+<ul id="jsonList"></ul>
+
+<script>
+    document.getElementById('openJsonButton').addEventListener('click', function() {
+        var input = document.getElementById('jsonFileInput');
+        var jsonList = document.getElementById('jsonList');
+        var file = input.files[0];
+        if (file) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    var jsonData = JSON.parse(e.target.result);
+                    jsonList.innerHTML = '';
+                    for (var key in jsonData) {
+                            if (jsonData.hasOwnProperty(key)) {
+                                var listItem = document.createElement('li');
+                                listItem.textContent = key + ': ' + jsonData[key];
+                                jsonList.appendChild(listItem);
+                            }
+                        }
+                    } catch (error) {
+                        alert('Error with open .json file: ' + error);
+                    }
+                };
+                reader.readAsText(file);
+            } else {
+                alert('Please select the JSON file.');
+            }
+        });
+</script>
+
 </body>
 </html>
