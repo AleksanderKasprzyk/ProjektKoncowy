@@ -34,6 +34,9 @@
               <a class="nav-link {{ 'active text-decoration-underline' if active_page == '/nbp_data' else '' }}" href="{{ url_for('nbp_data') }}">NBP data</a>
               </li>
               <li class="nav-item">
+              <a class="nav-link {{ 'active text-decoration-underline' if active_page == '/history' else '' }}" href="{{ url_for('history_page') }}">Purchases history</a>
+              </li>
+              <li class="nav-item">
               <a class="nav-link {{ 'active text-decoration-underline' if active_page == '' else '' }}" href="http://api.nbp.pl/">API NBP</a>
               </li>
               <li class="nav-item">

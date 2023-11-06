@@ -2,9 +2,56 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Logout</title>
 </head>
 <body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+              <li class="nav-item">
+              <a class="nav-link {{ 'active text-decoration-underline' if active_page == '/' else '' }}" href="{{ url_for('home_page') }}">Home page</a>
+              </li>
+              <li class="nav-item">
+              <a class="nav-link {{ 'active text-decoration-underline' if active_page == '/register_user' else '' }}" href="{{ url_for('register') }}">Register user</a>
+              </li>
+              <li class="nav-item">
+              <a class="nav-link {{ 'active text-decoration-underline' if active_page == '/login_user' else '' }}" href="{{ url_for('login') }}">Login user</a>
+              </li>
+              <li class="nav-item">
+              <a class="nav-link {{ 'active text-decoration-underline' if active_page == '/personal_wallet' else '' }}" href="{{ url_for('bank_wallet') }}">Personal wallet</a>
+              </li>
+              <li class="nav-item">
+              <a class="nav-link {{ 'active text-decoration-underline' if active_page == '/account_balance_operations.html' else '' }}" href="{{ url_for('account') }}">Your balance</a>
+              </li>
+              <li class="nav-item">
+              <a class="nav-link {{ 'active text-decoration-underline' if active_page == '/nbp_data' else '' }}" href="{{ url_for('nbp_data') }}">NBP data</a>
+              </li>
+              <li class="nav-item">
+              <a class="nav-link {{ 'active text-decoration-underline' if active_page == '/history' else '' }}" href="{{ url_for('history_page') }}">Purchases history</a>
+              </li>
+              <li class="nav-item">
+              <a class="nav-link {{ 'active text-decoration-underline' if active_page == '' else '' }}" href="http://api.nbp.pl/">API NBP</a>
+              </li>
+              <li class="nav-item">
+              <a class="nav-link {{ 'active text-decoration-underline' if active_page == '/logout_user' else '' }}" href="{{ url_for('logout') }}">Logout</a>
+              </li>
+
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    {% with messages = get_flashed_messages() %}  {# Kod pozwala na wyświetlenie wiadomości z funkcji flash #}
+        {% if messages %}
+            <ul>
+            {% for message in messages %}
+
+                    {{ message }}
+
+            {% endfor %}
 
 </body>
 </html>
