@@ -13,7 +13,6 @@ api_flask = 'http://api.nbp.pl/'
 account_balance = float(0)
 currency_list = []
 operation_history = []
-amount = float(0)
 register_users = []
 
 db = SQLAlchemy(app)
@@ -57,6 +56,8 @@ def login():
 @login_required
 def logout():
     logout_user()
+    answer_logout = "User logout"
+    flash(answer_logout)
     return redirect(url_for('home_page'))
 
 
@@ -174,9 +175,10 @@ def nbp_data():
             error_message = "Error while downloading data for table.", error_message
             flash(str(error_message))
 
+        flash("You correctly get NBP data")
         return render_template('nbp_data.html')
 
-    return render_template('nbp_data.html')
+    return redirect(url_for('home_page'))
 
 
 def save_table_first(filename, currencies_a):
@@ -197,6 +199,17 @@ def save_table_third(filename, currencies_c):
 def account_save(filename, data_save):
     with open(filename, mode='a') as file:
         json.dump(data_save, file, indent=4)
+
+
+def history(filename, history):
+    with open(filename, mode='a') as file:
+        json_line = json.dumps(history, indent=4)
+        file.write(json_line + ', \n')
+
+
+def bought_currency(filename, wallet):
+    with open(filename, mode='w') as file:
+        json.dump(wallet, file, indent=4)
 
 
 @app.route('/account_balance_operations.html', methods=['GET', 'POST'])
@@ -239,76 +252,110 @@ def account():
         return render_template('account_balance_operations.html', operation_add=operation_add,
                                operation_substract=operation_substract, account_balance=account_balance)
 
-    return render_template('account_balance_operations.html')
+    return render_template('account_balance_operations.html', account_balance=account_balance)
 
 
 @app.route('/personal_wallet', methods=['GET', 'POST'])
 def bank_wallet():
     global account_balance
-    if request.method == 'GET':
+    if request.method == 'POST':
         operation_buy = request.form.get('operation_buy')
         operation_sell = request.form.get('operation_sell')
         if operation_buy == 'operation_buy':
             currency_code_buy = request.form.get('currency_code')
             type_of_table_buy = request.form.get('type_table')
-            exchange_rate = nbp_data(f'exchangerates/rates/{type_of_table_buy}/{currency_code_buy}/?format=json')
-            amount = float(request.form.get('amount'))
-
-            if exchange_rate:
-                for_bank_wallet = requests.get(api_flask + exchange_rate)
-
-                if for_bank_wallet.status_code == 200:
-                    for_bank_wallet = for_bank_wallet.json()
-                    rates = for_bank_wallet.get('rates', [])
-                    if currency_code_buy in rates:
-                        for currency_code_buy in rates:
-                            mid = rates['mid']
-                            buy_currency = mid * amount
-                            if buy_currency > account_balance:
-                                answer = "Insufficient balance in the account."
-                                return render_template('nbp_data.html', amount=amount, rates=rates,
-                                                       buy_currency=buy_currency, answer=answer,
-                                                       exchange_rate=exchange_rate, currency_code_buy=currency_code_buy)
-                            else:
-                                account_balance -= buy_currency
-                                answer = "Bought {} {} for {:.2f} in PLN.".format(amount, currency_code_buy,
-                                                                                  buy_currency)
-                                return render_template('nbp_data.html', answer=answer, amount=amount,
-                                                       currency_code_buy=currency_code_buy, buy_currency=buy_currency)
-            else:
-                answer = "The exchange rate cannot be obtained."
-                return render_template('nbp_data.html', answer=answer)
+            amount = float(request.form.get('buy_amount'))
+            exchange_rate = requests.get(
+                f'http://api.nbp.pl/api/exchangerates/rates/{type_of_table_buy}/{currency_code_buy}/?format=json')
+            if exchange_rate.status_code == 200:
+                for_bank_wallet = exchange_rate.json()
+                rates = for_bank_wallet['rates'][0]['mid']
+                if rates:
+                    buy_currency = rates * amount
+                    if buy_currency > account_balance:
+                        answer = "Insufficient balance in the account."
+                        flash(answer)
+                        return render_template('Personal_wallet.html', amount=amount, rates=rates,
+                                               buy_currency=buy_currency, exchange_rate=exchange_rate,
+                                               currency_code_buy=currency_code_buy)
+                    else:
+                        account_balance -= buy_currency
+                        answer = "Bought {} {} for {:.2f} in PLN.".format(amount, currency_code_buy, buy_currency)
+                        buy_history = \
+                            {
+                                "bought amount": amount,
+                                "bought currency": currency_code_buy,
+                                "bought for": 'mid'
+                            }
+                        history('transaction_history.json', buy_history)
+                        bought_currency('operation_buy.json', buy_history)
+                        flash(answer)
+                        return render_template('Personal_wallet.html', amount=amount,
+                                               currency_code_buy=currency_code_buy, buy_currency=buy_currency)
+                else:
+                    answer = "The exchange rate cannot be obtained."
+                    flash(answer)
+                    return render_template('Personal_wallet.html')
 
         elif operation_sell == 'operation_sell':
-            sell_currency_code = request.form.get('currency_code')
-            sell_type_of_table = request.form.get('type_table')
-            exchange_rate = nbp_data(f'exchangerates/rates/{sell_type_of_table}/{sell_currency_code}/?format=json')
-            amount = float(request.form.get('amount'))
-
-            if exchange_rate:
-                for_bank_wallet = requests.get(api_flask + exchange_rate)
-
-                if for_bank_wallet.status_code == 200:
-                    for_bank_wallet = for_bank_wallet.json()
-                    rates = for_bank_wallet.get('rates', [])
-                    if sell_currency_code in rates:
-                        for sell_currency_code in rates:
-                            mid = rates['mid']
-                            sell_currency = mid * amount
-
-                            account_balance += sell_currency
-                            answer = "Sold {} {} for {:.2f} in PLN.".format(amount, sell_currency_code, sell_currency)
-                            return render_template('nbp_data.html', answer=answer, sell_currency=sell_currency,
-                                                   exchange_rate=exchange_rate, sell_currency_code=sell_currency_code,
-                                                   operation_buy=operation_buy, operation_sell=operation_sell)
+            sell_currency_code = request.form.get('sell_currency_code')
+            sell_type_of_table = request.form.get('sell_type_table')
+            amount = float(request.form.get('sale_amount'))
+            exchange_rate = requests.get(
+                f'http://api.nbp.pl/api/exchangerates/rates/{sell_type_of_table}/{sell_currency_code}/?format=json')
+            if exchange_rate.status_code == 200:
+                for_bank_wallet = exchange_rate.json()
+                rates = for_bank_wallet.get('rates', [])[0].get('mid', None)
+                with open('operation_buy.json', mode='a') as file:
+                    file_content = file.read()
+                if rates and sell_currency_code in file_content:
+                    sell_currency = rates * amount
+                    account_balance += sell_currency
+                    answer = "Sold {} {} for {:.2f} in PLN.".format(amount, sell_currency_code, sell_currency)
+                    sell_history = \
+                        {
+                            "sold amount": amount,
+                            "sold currency": sell_currency_code,
+                            "sold for": 'mid'
+                        }
+                    del file_content["bought amount": amount, "bought currency": sell_currency_code, "bought for": 'mid']
+                    history('transaction_history.json', sell_history)
+                    flash(answer)
+                    return render_template('Personal_wallet.html', sell_currency=sell_currency,
+                                           exchange_rate=exchange_rate, sell_currency_code=sell_currency_code,
+                                           operation_buy=operation_buy, operation_sell=operation_sell)
+                else:
+                    answer = "Currency is not in Your wallet"
+                    flash(answer)
             else:
                 answer = "The exchange rate cannot be obtained."
-                return render_template('nbp_data.html', answer=answer, operation_buy=operation_buy,
+                flash(answer)
+                return render_template('Personal_wallet.html', operation_buy=operation_buy,
                                        operation_sell=operation_sell)
 
-        return render_template('nbp_data.html', operation_buy=operation_buy, operation_sell=operation_sell)
+        return render_template('Personal_wallet.html', operation_buy=operation_buy, operation_sell=operation_sell)
 
-    return render_template('nbp_data.html')
+    return render_template('Personal_wallet.html', account_balance=account_balance)
+
+
+@app.route('/history', methods=['GET', 'POST'])
+def history_page():
+    if request.method == 'GET':
+        with open('transaction_history.json', mode='r') as json_file:
+            for_history = json.load(json_file)
+        print(for_history)
+        """try:
+            for bought_history in for_history:
+                bought_amount = bought_history["bought amount"]
+                bought_currencies = bought_history["bought currency"]
+                bought_for = bought_history["bought for"]
+                return render_template('Transaction_history.html', bought_amount=bought_amount,
+                                       bought_currencies=bought_currencies, bought_for=bought_for)
+        except json.JSONDecodeError as error:
+            json_decode_error = ("JSON decoding error: ", error)
+            return render_template('Transaction_history.html', json_decode_error=json_decode_error, error=error)"""
+
+    return render_template('Transaction_history.html', for_history=for_history)
 
 
 if __name__ == '__main__':
