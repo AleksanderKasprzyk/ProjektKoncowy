@@ -46,12 +46,39 @@
       </div>
     </nav>
 
-        <form method="get" action="/history">
+        <form method="GET" action="/history">
     <h1>History operations data</h1>
     <ul>
         {% for item in for_history %}
-            <li>{{ item }}</li>
+            <table class="table table-striped table-hover">
+            <tbody>
+            <tr><th scope="row">{{ loop.index }} </th>
+                    <td>
+                        {% if item["bought amount"] is defined %}
+                            Bought amount: {{ item["bought amount"] }}
+                        {% endif %}
+                        {% if item["bought currency"] is defined %}
+                            Bought Currency: {{ item["bought currency"] }}
+                        {% endif %}
+                        {% if item["bought for"] is defined %}
+                            Bought for: {{ item["bought for"] }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if item["sold amount"] is defined %}
+                            Sold amount: {{ item["sold amount"] }}
+                        {% endif %}
+                        {% if item["sold currency"] is defined %}
+                            Sold Currency: {{ item["sold currency"] }}
+                        {% endif %}
+                        {% if item["sold for"] is defined %}
+                            Sold for: {{ item["sold for"] }}
+                        {% endif %}
+                    </td>
+            </tr>
         {% endfor %}
+            </tbody>
+            </table>
     </ul>
         </form>
 </body>

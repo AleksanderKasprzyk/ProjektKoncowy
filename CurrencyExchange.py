@@ -160,23 +160,23 @@ def nbp_data():
                 currencies_a = response_a.json()
                 if currencies_a:
                     save_table_first('currencies_first_list.json', currencies_a)
-                    return render_template('nbp_data.html', currencies_a=currencies_a)
+
             if response_b.status_code == 200:
                 currencies_b = response_b.json()
                 if currencies_b:
                     save_table_second('currencies_second_list.json', currencies_b)
-                    return render_template('nbp_data.html', currencies_b=currencies_b)
+
             if response_c.status_code == 200:
                 currencies_c = response_c.json()
                 if currencies_c:
                     save_table_third('currencies_third_list.json', currencies_c)
-                    return render_template('nbp_data.html', currencies_c=currencies_c)
+
         except Exception as error_message:
             error_message = "Error while downloading data for table.", error_message
             flash(str(error_message))
 
         flash("You correctly get NBP data")
-        return render_template('nbp_data.html')
+        return redirect(url_for('home_page'))
 
     return redirect(url_for('home_page'))
 
@@ -197,19 +197,27 @@ def save_table_third(filename, currencies_c):
 
 
 def account_save(filename, data_save):
-    with open(filename, mode='a') as file:
-        json.dump(data_save, file, indent=4)
+    with open(filename) as file:
+        json_data = json.load(file)
+    json_data.append(data_save)
+    with open(filename, mode='w') as file:
+        json.dump(json_data, file, indent=4)
 
 
 def history(filename, history):
-    with open(filename, mode='a') as file:
-        json_line = json.dumps(history, indent=4)
-        file.write(json_line + ', \n')
+    with open(filename) as file:
+        json_data = json.load(file)
+    json_data.append(history)
+    with open(filename, mode='w') as file:
+        json.dump(json_data, file, indent=4)
 
 
 def bought_currency(filename, wallet):
+    with open(filename) as file:
+        json_data = json.load(file)
+    json_data.append(wallet)
     with open(filename, mode='w') as file:
-        json.dump(wallet, file, indent=4)
+        json.dump(json_data, file, indent=4)
 
 
 @app.route('/account_balance_operations.html', methods=['GET', 'POST'])
@@ -277,7 +285,7 @@ def bank_wallet():
                         flash(answer)
                         return render_template('Personal_wallet.html', amount=amount, rates=rates,
                                                buy_currency=buy_currency, exchange_rate=exchange_rate,
-                                               currency_code_buy=currency_code_buy)
+                                               currency_code_buy=currency_code_buy, account_balance=account_balance)
                     else:
                         account_balance -= buy_currency
                         answer = "Bought {} {} for {:.2f} in PLN.".format(amount, currency_code_buy, buy_currency)
@@ -290,7 +298,7 @@ def bank_wallet():
                         history('transaction_history.json', buy_history)
                         bought_currency('operation_buy.json', buy_history)
                         flash(answer)
-                        return render_template('Personal_wallet.html', amount=amount,
+                        return render_template('Personal_wallet.html', amount=amount, account_balance=account_balance,
                                                currency_code_buy=currency_code_buy, buy_currency=buy_currency)
                 else:
                     answer = "The exchange rate cannot be obtained."
@@ -306,7 +314,7 @@ def bank_wallet():
             if exchange_rate.status_code == 200:
                 for_bank_wallet = exchange_rate.json()
                 rates = for_bank_wallet.get('rates', [])[0].get('mid', None)
-                with open('operation_buy.json', mode='a') as file:
+                with open('operation_buy.json', mode='r+') as file:
                     file_content = file.read()
                 if rates and sell_currency_code in file_content:
                     sell_currency = rates * amount
@@ -318,12 +326,12 @@ def bank_wallet():
                             "sold currency": sell_currency_code,
                             "sold for": 'mid'
                         }
-                    del file_content["bought amount": amount, "bought currency": sell_currency_code, "bought for": 'mid']
                     history('transaction_history.json', sell_history)
                     flash(answer)
                     return render_template('Personal_wallet.html', sell_currency=sell_currency,
-                                           exchange_rate=exchange_rate, sell_currency_code=sell_currency_code,
-                                           operation_buy=operation_buy, operation_sell=operation_sell)
+                                           account_balance=account_balance,exchange_rate=exchange_rate,
+                                           sell_currency_code=sell_currency_code, operation_buy=operation_buy,
+                                           operation_sell=operation_sell, file_content=file_content)
                 else:
                     answer = "Currency is not in Your wallet"
                     flash(answer)
@@ -331,9 +339,10 @@ def bank_wallet():
                 answer = "The exchange rate cannot be obtained."
                 flash(answer)
                 return render_template('Personal_wallet.html', operation_buy=operation_buy,
-                                       operation_sell=operation_sell)
+                                       operation_sell=operation_sell, account_balance=account_balance)
 
-        return render_template('Personal_wallet.html', operation_buy=operation_buy, operation_sell=operation_sell)
+        return render_template('Personal_wallet.html', operation_buy=operation_buy, operation_sell=operation_sell,
+                               account_balance=account_balance)
 
     return render_template('Personal_wallet.html', account_balance=account_balance)
 
@@ -343,17 +352,6 @@ def history_page():
     if request.method == 'GET':
         with open('transaction_history.json', mode='r') as json_file:
             for_history = json.load(json_file)
-        print(for_history)
-        """try:
-            for bought_history in for_history:
-                bought_amount = bought_history["bought amount"]
-                bought_currencies = bought_history["bought currency"]
-                bought_for = bought_history["bought for"]
-                return render_template('Transaction_history.html', bought_amount=bought_amount,
-                                       bought_currencies=bought_currencies, bought_for=bought_for)
-        except json.JSONDecodeError as error:
-            json_decode_error = ("JSON decoding error: ", error)
-            return render_template('Transaction_history.html', json_decode_error=json_decode_error, error=error)"""
 
     return render_template('Transaction_history.html', for_history=for_history)
 
