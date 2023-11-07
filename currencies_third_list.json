@@ -1,87 +1,87 @@
 [
     {
         "table": "C",
-        "no": "212/C/NBP/2023",
-        "tradingDate": "2023-10-31",
-        "effectiveDate": "2023-11-02",
+        "no": "215/C/NBP/2023",
+        "tradingDate": "2023-11-06",
+        "effectiveDate": "2023-11-07",
         "rates": [
             {
                 "currency": "dolar ameryka\u0144ski",
                 "code": "USD",
-                "bid": 4.1477,
-                "ask": 4.2315
+                "bid": 4.108,
+                "ask": 4.191
             },
             {
                 "currency": "dolar australijski",
                 "code": "AUD",
-                "bid": 2.6275,
-                "ask": 2.6805
+                "bid": 2.6694,
+                "ask": 2.7234
             },
             {
                 "currency": "dolar kanadyjski",
                 "code": "CAD",
-                "bid": 2.9915,
-                "ask": 3.0519
+                "bid": 3.0048,
+                "ask": 3.0656
             },
             {
                 "currency": "euro",
                 "code": "EUR",
-                "bid": 4.397,
-                "ask": 4.4858
+                "bid": 4.4116,
+                "ask": 4.5008
             },
             {
                 "currency": "forint (W\u0119gry)",
                 "code": "HUF",
-                "bid": 0.011502,
-                "ask": 0.011734
+                "bid": 0.011614,
+                "ask": 0.011848
             },
             {
                 "currency": "frank szwajcarski",
                 "code": "CHF",
-                "bid": 4.5709,
-                "ask": 4.6633
+                "bid": 4.5757,
+                "ask": 4.6681
             },
             {
                 "currency": "funt szterling",
                 "code": "GBP",
-                "bid": 5.0338,
-                "ask": 5.1354
+                "bid": 5.0908,
+                "ask": 5.1936
             },
             {
                 "currency": "jen (Japonia)",
                 "code": "JPY",
-                "bid": 0.027418,
-                "ask": 0.027972
+                "bid": 0.027434,
+                "ask": 0.027988
             },
             {
                 "currency": "korona czeska",
                 "code": "CZK",
-                "bid": 0.1793,
-                "ask": 0.1829
+                "bid": 0.1803,
+                "ask": 0.1839
             },
             {
                 "currency": "korona du\u0144ska",
                 "code": "DKK",
-                "bid": 0.589,
-                "ask": 0.601
+                "bid": 0.5915,
+                "ask": 0.6035
             },
             {
                 "currency": "korona norweska",
                 "code": "NOK",
-                "bid": 0.3716,
-                "ask": 0.3792
-            },
-            {
-                "currency": "korona szwedzka",
-                "code": "SEK",
                 "bid": 0.3722,
                 "ask": 0.3798
             },
             {
+                "currency": "korona szwedzka",
+                "code": "SEK",
+                "bid": 0.3775,
+                "ask": 0.3851
+            },
+            {
                 "currency": "SDR (MFW)",
                 "code": "XDR",
-                "bid": 5.4385,
-                "ask": 5.5483
+                "bid": 5.4194,
+                "ask": 5.5288
             }
         ]
     }

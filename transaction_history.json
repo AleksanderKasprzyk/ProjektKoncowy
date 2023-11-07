@@ -1,5 +1,37 @@
-{
-    "bought amount": 1.0,
-    "bought currency": "USD",
-    "bought for": "mid"
-}
+[
+    {
+        "bought amount": 1.0,
+        "bought currency": "USD",
+        "bought for": "mid"
+    },
+    {
+        "sold amount": 1.0,
+        "sold currency": "USD",
+        "sold for": "mid"
+    },
+    {
+        "sold amount": 1.0,
+        "sold currency": "USD",
+        "sold for": "mid"
+    },
+    {
+        "bought amount": 1.0,
+        "bought currency": "USD",
+        "bought for": "mid"
+    },
+    {
+        "bought amount": 1.0,
+        "bought currency": "USD",
+        "bought for": "mid"
+    },
+    {
+        "sold amount": 1.0,
+        "sold currency": "USD",
+        "sold for": "mid"
+    },
+    {
+        "sold amount": 1.0,
+        "sold currency": "USD",
+        "sold for": "mid"
+    }
+]

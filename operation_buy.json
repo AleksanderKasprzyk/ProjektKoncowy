@@ -1,5 +1,7 @@
-{
-    "bought_amount": 1.0,
-    "bought_currency": "USD",
-    "bought_for": "mid"
-}
+[
+    {
+        "bought amount": 1.0,
+        "bought currency": "USD",
+        "bought for": "mid"
+    }
+]
