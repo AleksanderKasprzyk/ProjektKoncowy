@@ -220,7 +220,7 @@ def bought_currency(filename, wallet):
         json.dump(json_data, file, indent=4)
 
 
-@app.route('/account_balance_operations.html', methods=['GET', 'POST'])
+@app.route('/account_balance_operations', methods=['GET', 'POST'])
 def account():
     global account_balance
     if request.method == 'POST':
