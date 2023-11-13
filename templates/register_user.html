@@ -19,16 +19,10 @@
               <a class="nav-link {{ 'active text-decoration-underline' if active_page == '/' else '' }}" href="{{ url_for('home_page') }}">Home page</a>
               </li>
               <li class="nav-item">
-              <a class="nav-link {{ 'active text-decoration-underline' if active_page == '/register_user' else '' }}" href="{{ url_for('register') }}">Register user</a>
-              </li>
-              <li class="nav-item">
-              <a class="nav-link {{ 'active text-decoration-underline' if active_page == '/login_user' else '' }}" href="{{ url_for('login') }}">Login user</a>
-              </li>
-              <li class="nav-item">
               <a class="nav-link {{ 'active text-decoration-underline' if active_page == '/personal_wallet' else '' }}" href="{{ url_for('bank_wallet') }}">Personal wallet</a>
               </li>
               <li class="nav-item">
-              <a class="nav-link {{ 'active text-decoration-underline' if active_page == '/account_balance_operations.html' else '' }}" href="{{ url_for('account') }}">Your balance</a>
+              <a class="nav-link {{ 'active text-decoration-underline' if active_page == '/account_balance_operations' else '' }}" href="{{ url_for('account') }}">Your balance</a>
               </li>
               <li class="nav-item">
               <a class="nav-link {{ 'active text-decoration-underline' if active_page == '/nbp_data' else '' }}" href="{{ url_for('nbp_data') }}">NBP data</a>
@@ -39,9 +33,27 @@
               <li class="nav-item">
               <a class="nav-link {{ 'active text-decoration-underline' if active_page == '' else '' }}" href="http://api.nbp.pl/">API NBP</a>
               </li>
+              {% if current_user.is_authenticated %}
+              <li class="nav-item">
+              <a class="nav-link {{ 'active text-decoration-underline' if active_page == '/register_user' else '' }}" href="{{ url_for('register') }}" style="display: none;">Register user</a>
+              </li>
+              <li class="nav-item">
+              <a class="nav-link {{ 'active text-decoration-underline' if active_page == '/login_user' else '' }}" href="{{ url_for('login') }}" style="display: none;">Login user</a>
+              </li>
               <li class="nav-item">
               <a class="nav-link {{ 'active text-decoration-underline' if active_page == '/logout_user' else '' }}" href="{{ url_for('logout') }}">Logout</a>
               </li>
+              {% else %}
+              <li class="nav-item">
+              <a class="nav-link {{ 'active text-decoration-underline' if active_page == '/register_user' else '' }}" href="{{ url_for('register') }}">Register user</a>
+              </li>
+              <li class="nav-item">
+              <a class="nav-link {{ 'active text-decoration-underline' if active_page == '/login_user' else '' }}" href="{{ url_for('login') }}">Login user</a>
+              </li>
+              <li class="nav-item">
+              <a class="nav-link {{ 'active text-decoration-underline' if active_page == '/logout_user' else '' }}" href="{{ url_for('logout') }}" style="display: none;">Logout</a>
+              </li>
+              {% endif %}
 
           </ul>
         </div>
